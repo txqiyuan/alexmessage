@@ -25,7 +25,7 @@ public class WeChatConnectController {
             }
         } else if("post".equalsIgnoreCase(request.getMethod())) {
             Map<String, String> requestMap = WeChatUtil.parseXmlFromWeChat(is);
-            return WeChatUtil.getReMessage(requestMap);
+            return WeChatUtil.getResponse(requestMap);
         }
         return null;
     }

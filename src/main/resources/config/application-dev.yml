@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: info #root级别
+    com.rongxingkj.alexmessage: warn #package级别
+  file:
+    name: logs/system.log
+
+
+
+
+
