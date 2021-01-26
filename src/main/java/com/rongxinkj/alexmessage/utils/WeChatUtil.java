@@ -159,4 +159,13 @@ public class WeChatUtil {
         return token;
     }
 
+    /**
+     * 微信公众号发送模版消息需要设置行业，在这个方法中设置
+     */
+    public static void setIndustry() {
+        String url = "https://api.weixin.qq.com/cgi-bin/template/api_set_industry?access_token=" + getAccessToken();
+        String data = "{\"industry_id1\":\"1\",\"industry_id2\":\"4\"}";
+        String result = CommonFunctions.sendPostRequest(url, data);
+        System.out.println(result);
+    }
 }

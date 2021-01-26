@@ -1,30 +1,30 @@
 package com.rongxinkj.alexmessage.model;
 
 public class MusicMessage extends BaseMessage {
-    private Music music;
+    private MusicMessageMusic musicMessageMusic;
 
     public MusicMessage() {
         this.setMsgType("music");
     }
 
-    public MusicMessage(String toUserName, String fromUserName, String createTime, Music music) {
+    public MusicMessage(String toUserName, String fromUserName, String createTime, MusicMessageMusic musicMessageMusic) {
         super(toUserName, fromUserName, createTime);
-        this.music = music;
+        this.musicMessageMusic = musicMessageMusic;
         this.setMsgType("music");
     }
 
-    public Music getMusic() {
-        return music;
+    public MusicMessageMusic getMusic() {
+        return musicMessageMusic;
     }
 
-    public void setMusic(Music music) {
-        this.music = music;
+    public void setMusic(MusicMessageMusic musicMessageMusic) {
+        this.musicMessageMusic = musicMessageMusic;
     }
 
     @Override
     public String toString() {
         return "MusicMessage{" +
-                "music=" + music +
+                "music=" + musicMessageMusic +
                 "} " + super.toString();
     }
 }

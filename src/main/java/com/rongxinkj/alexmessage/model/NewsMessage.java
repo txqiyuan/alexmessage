@@ -4,16 +4,16 @@ import java.util.List;
 
 public class NewsMessage extends BaseMessage {
     private String articlCount;
-    private List<Article> articles;
+    private List<NewsMessageArticle> newsMessageArticles;
 
     public NewsMessage() {
         this.setMsgType("news");
     }
 
-    public NewsMessage(String toUserName, String fromUserName, String createTime, String articlCount, List<Article> articles) {
+    public NewsMessage(String toUserName, String fromUserName, String createTime, String articlCount, List<NewsMessageArticle> newsMessageArticles) {
         super(toUserName, fromUserName, createTime);
         this.articlCount = articlCount;
-        this.articles = articles;
+        this.newsMessageArticles = newsMessageArticles;
         this.setMsgType("news");
     }
 
@@ -25,19 +25,19 @@ public class NewsMessage extends BaseMessage {
         this.articlCount = articlCount;
     }
 
-    public List<Article> getArticles() {
-        return articles;
+    public List<NewsMessageArticle> getArticles() {
+        return newsMessageArticles;
     }
 
-    public void setArticles(List<Article> articles) {
-        this.articles = articles;
+    public void setArticles(List<NewsMessageArticle> newsMessageArticles) {
+        this.newsMessageArticles = newsMessageArticles;
     }
 
     @Override
     public String toString() {
         return "NewsMessage{" +
                 "articlCount='" + articlCount + '\'' +
-                ", articles=" + articles +
+                ", articles=" + newsMessageArticles +
                 "} " + super.toString();
     }
 }

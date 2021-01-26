@@ -1,16 +1,16 @@
 package com.rongxinkj.alexmessage.model;
 
-public class Music {
+public class MusicMessageMusic {
     private String title;
     private String description;
     private String musicURL;
     private String hqMusicURL;
     private String thumbMediaId;
 
-    public Music() {
+    public MusicMessageMusic() {
     }
 
-    public Music(String title, String description, String musicURL, String hqMusicURL, String thumbMediaId) {
+    public MusicMessageMusic(String title, String description, String musicURL, String hqMusicURL, String thumbMediaId) {
         this.title = title;
         this.description = description;
         this.musicURL = musicURL;

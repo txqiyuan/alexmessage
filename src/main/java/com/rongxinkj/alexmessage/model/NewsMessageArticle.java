@@ -1,15 +1,15 @@
 package com.rongxinkj.alexmessage.model;
 
-public class Article {
+public class NewsMessageArticle {
     private String title;
     private String description;
     private String picURL;
     private String url;
 
-    public Article() {
+    public NewsMessageArticle() {
     }
 
-    public Article(String title, String description, String picURL, String url) {
+    public NewsMessageArticle(String title, String description, String picURL, String url) {
         this.title = title;
         this.description = description;
         this.picURL = picURL;
