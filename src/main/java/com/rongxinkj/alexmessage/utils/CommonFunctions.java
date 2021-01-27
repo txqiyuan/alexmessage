@@ -1,5 +1,6 @@
 package com.rongxinkj.alexmessage.utils;
 
+import com.rongxinkj.alexmessage.httpclientpool.HttpConnectionManager;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -30,7 +31,7 @@ public class CommonFunctions {
     }
 
     /**
-     * 向指定地址发送get请求，目标地址对应服务器返回响应字符串
+     * 创建默认的httpClient，发送get请求
      * @param url
      * @return
      */
@@ -42,7 +43,7 @@ public class CommonFunctions {
     }
 
     /**
-     * 向指定地址发送带data数据的post请求，目标地址对应服务器返回响应字符串
+     * 创建默认的httpClient，发送post请求
      * @param url
      * @param jsonData
      * @return
@@ -59,49 +60,32 @@ public class CommonFunctions {
     }
 
     /**
-     * 向指定地址发送https的get请求，绕过了SSL证书的验证，目标地址对应服务器返回响应字符串
+     * 从连接池中获取httpClient，发送get请求
      * @param url
      * @return
      */
-    public static String sendHttpsGetRequest(String url) {
-        //创建自定义的httpClient实例，这个httpClient绕过了https的SSL验证
-        CloseableHttpClient httpClient = getCustomHttpClient();
+    public static String sendHttpsGetRequest(String url, int timeOut) {
+        //从连接池中获取httpClient
+        CloseableHttpClient httpClient = HttpConnectionManager.getHttpClient(timeOut);
         //返回响应体，httpClient在被调用的方法中使用完成之后被关闭
         return getResponseFromGetRequest(url, httpClient);
     }
 
     /**
-     * 向指定地址发送带data数据的https的post请求，绕过了SSL证书的验证，目标地址对应服务器返回响应字符串
+     * 从连接池中获取httpClient，发送post请求
      * @param url
      * @param jsonData
      * @return
      */
-    public static String sendHttpsPostRequest(String url, String jsonData) {
+    public static String sendHttpsPostRequest(String url, String jsonData, int timeOut) {
         if (jsonData == null || jsonData.isEmpty()) {
-            return sendHttpsGetRequest(url);
+            return sendHttpsGetRequest(url, timeOut);
         }
 
-        //创建自定义的httpClient实例，这个httpClient绕过了https的SSL验证
-        CloseableHttpClient httpClient = getCustomHttpClient();
+        //从连接池中获取httpClient
+        CloseableHttpClient httpClient = HttpConnectionManager.getHttpClient(timeOut);
         //返回响应体，httpClient在被调用的方法中使用完成之后被关闭
         return getResponseFromPostRequest(url, jsonData, httpClient);
-    }
-
-    /**
-     * 根据SSLContext创建自定义的httpClient实例
-     * @return
-     */
-    private static CloseableHttpClient getCustomHttpClient() {
-        //如果要进行https访问，则必须要对SSL证书进行处理，这里选择绕过SSL验证
-        SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
-        SSLContext sslContext = null;
-        try {
-            sslContext = sslContextBuilder.loadTrustMaterial(null, (certificate, authType) -> true).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //创建自定义的httpClient实例
-        return HttpClients.custom().setSSLContext(sslContext).setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
     }
 
     /**
@@ -168,8 +152,4 @@ public class CommonFunctions {
         }
         return responseBody;
     }
-
-
-
-
 }

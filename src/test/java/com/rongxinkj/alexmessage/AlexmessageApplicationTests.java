@@ -110,6 +110,6 @@ class AlexmessageApplicationTests {
                 " \"data\": {\"48416578\":{\"L3_YL_1\":\"23.5\"}}\n" +
                 "}";
 
-        System.out.println(CommonFunctions.sendHttpsPostRequest(url, data));
+        System.out.println(CommonFunctions.sendHttpsPostRequest(url, data, 6000));
     }
 }

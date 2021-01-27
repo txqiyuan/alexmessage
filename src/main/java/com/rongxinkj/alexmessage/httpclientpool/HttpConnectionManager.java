@@ -2,33 +2,63 @@ package com.rongxinkj.alexmessage.httpclientpool;
 
 import org.apache.http.*;
 import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.config.AuthSchemes;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionKeepAliveStrategy;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeaderElementIterator;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 /**
  * Created by Tiffany on 2019-7-19.
  */
 public class HttpConnectionManager {
-    /** 全局连接池对象 */
-    private static final PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
+    //如果要进行https访问，则必须要对SSL证书进行处理，这里选择绕过SSL验证
+    private static SSLContext sslContext = null;
+    static {
+        SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
+        try {
+            sslContext = sslContextBuilder.loadTrustMaterial(null, (certificate, authType) -> true).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    /**
-     * 静态代码块配置连接池信息
-     */
+    //注册http和https访问方式
+    private static final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
+            //注册http请求
+            .register("http", PlainConnectionSocketFactory.getSocketFactory())
+            //注册https请求
+            .register("https", new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier()))
+            .build();
+
+    //全局连接池对象
+    private static final PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+
+    //静态代码块配置连接池信息
     static {
         // 设置最大连接数
         connManager.setMaxTotal(300);
@@ -52,7 +82,7 @@ public class HttpConnectionManager {
                 .setSocketTimeout(timeOut)
                 .build();
 
-        /**
+        /*
          * 超时重试机制，为了防止超时不生效而设置
          * 如果返回false，不重试连接。返回true，重试连接
          * 这里会根据情况进行判断是否重试
@@ -88,7 +118,7 @@ public class HttpConnectionManager {
             }
         };
 
-        /**
+        /*
          * 长连接策略：
          * 对于请求token和语音的host保持连接6分钟，其余暂定3分钟
          */
@@ -104,7 +134,8 @@ public class HttpConnectionManager {
                     if (value != null && param.equalsIgnoreCase("timeout")) {
                         try {
                             return Long.parseLong(value) * 1000;
-                        } catch(NumberFormatException ignore) {
+                        } catch(NumberFormatException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
