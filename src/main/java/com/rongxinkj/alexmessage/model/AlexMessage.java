@@ -1,10 +1,13 @@
 package com.rongxinkj.alexmessage.model;
 
+import net.sf.json.JSONObject;
+
 public class AlexMessage {
     private String touser;
     private String template_id;
     private String url;
     private AlexMessageData data;
+    private JSONObject jsonObject;
 
     public String getTouser() {
         return touser;
@@ -36,5 +39,13 @@ public class AlexMessage {
 
     public void setData(AlexMessageData data) {
         this.data = data;
+    }
+
+    public JSONObject getJsonObject() {
+        return jsonObject;
+    }
+
+    public void setJsonObject(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
     }
 }

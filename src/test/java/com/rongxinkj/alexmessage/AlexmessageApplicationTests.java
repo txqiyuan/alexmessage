@@ -86,9 +86,30 @@ class AlexmessageApplicationTests {
         alexMessage.setUrl("http://117.176.184.118:9696/summer");
         alexMessage.setData(data);
 
+        JSONObject j = new JSONObject();
+        j.put("L1_LF_1", 23.5);
+        j.put("L1_LF_2", 45.3);
+        JSONObject o = new JSONObject();
+        o.put("12345678", j);
+        alexMessage.setJsonObject(o);
+
         JSONObject jsonObject = JSONObject.fromObject(alexMessage);
+        System.out.println(jsonObject);
+
         String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + WeChatUtil.getAccessToken();
         String result = CommonFunctions.sendPostRequest(url, jsonObject.toString());
         System.out.println(result);
+    }
+
+    @Test
+    public void testAlex() {
+        String url = "https://218.6.244.186:15011/api/devices/datapoints?type=1";
+        String data = "{\n" +
+                " \"deviceId\":\"48416578\",\n" +
+                " \"apikey\":\"DD8B54B6C149994294BF3DD1294F8EBC\",\n" +
+                " \"data\": {\"48416578\":{\"L3_YL_1\":\"23.5\"}}\n" +
+                "}";
+
+        System.out.println(CommonFunctions.sendHttpsPostRequest(url, data));
     }
 }
