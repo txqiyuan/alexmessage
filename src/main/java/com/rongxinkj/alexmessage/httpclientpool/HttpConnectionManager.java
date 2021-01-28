@@ -58,12 +58,17 @@ public class HttpConnectionManager {
     //全局连接池对象
     private static final PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
 
+    // 开辟一个线程用于清理过期的http连接
+    private static final CloseExpiredHttpThread closeExpiredHttpThread = new CloseExpiredHttpThread(connManager);
+
     //静态代码块配置连接池信息
     static {
         // 设置最大连接数
         connManager.setMaxTotal(300);
         // 设置每个连接的路由数
         connManager.setDefaultMaxPerRoute(30);
+
+        closeExpiredHttpThread.start();
     }
 
     /**
